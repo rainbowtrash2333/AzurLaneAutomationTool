@@ -18,7 +18,7 @@ public class Location {
     private Core.MinMaxLocResult minMaxLocResult;
 
     public Location (Mat source, String name) {
-        template = Imgcodecs.imread("templateImage/" + name + ".png", Imgcodecs.IMREAD_GRAYSCALE);// 4.0.1 改为IMREAD_GRAYSCALE
+        template = Imgcodecs.imread("templateImages/" + name + ".png", Imgcodecs.IMREAD_GRAYSCALE);// 4.0.1 改为IMREAD_GRAYSCALE
         if (template.empty()) {
             System.out.println("无法打开" + name);
             System.exit(1);
@@ -39,22 +39,6 @@ public class Location {
     // 0.85以下 3会匹配为2
     public boolean exist () {
         return (minMaxLocResult.maxVal > 0.85);
-    }
-
-    public Mat getTemplate () {
-        return template;
-    }
-
-    public Mat getResult () {
-        return result;
-    }
-
-    public String getName () {
-        return name;
-    }
-
-    public Point getPoint () {
-        return point;
     }
 
     @Override

@@ -34,12 +34,12 @@ public class Battlefront {
         // 第三章数据
         nodes.add(new Node(400, 210));
         nodes.add(new Node(230, 500 ));
-        nodes.add(new Node(490, 130 ));
-        nodes.add(new Node(610, 360 ));
+        nodes.add(new Node(780, 145 ));
+        nodes.add(new Node(630, 360 ));
         // 第四章数据
         nodes.add(new Node(230, 300));
         nodes.add(new Node(420, 450 ));
-      //  nodes.add(new Node(490, 130 ));
+        nodes.add(new Node(820, 550 ));
        // nodes.add(new Node(610, 360 ));
     }
     public  int getX(){

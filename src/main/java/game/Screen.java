@@ -5,7 +5,9 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import unit.ImageHelper;
 import unit.Location;
+
 import java.awt.image.BufferedImage;
+
 import org.opencv.core.*;
 
 
@@ -39,18 +41,15 @@ public class Screen {
     }
 
     public void init () {
-        BufferedImage bfimg = new ScreenShot().getScreenShot(0, 0, 1920, 1080);
-
-        Mat source = ImageHelper.BufferedImage2Mat(bfimg);
-        Mat grayScouce = new Mat();
-        Imgproc.cvtColor(source, grayScouce, Imgproc.COLOR_BGR2GRAY);
-
-        Location attackLocation = new Location(grayScouce, "attack");
-        exist = attackLocation.exist();
-        x = attackLocation.x - 1093;
-        y = attackLocation.y - 402;
-        startPoint = new Point(x, y);
-        endPoint = new Point(x + height, y + width);
+        Mat src = new ScreenShot().screenShotAsMat(0, 0, 1920, 1080);
+        Point p = matchTemplates.INSTANCE.matchObject(src, "attack", 0.6);
+        if (p != null) {
+            exist=true;
+            x = (int) (p.x - 1012);
+            y = (int) (p.y - 476);
+            startPoint = new Point(x, y);
+            endPoint = new Point(x + height, y + width);
+        }else exist=false;
     }
 
     public boolean exist () {

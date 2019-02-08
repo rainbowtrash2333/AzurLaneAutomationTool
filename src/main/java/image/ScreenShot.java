@@ -5,7 +5,6 @@ import org.opencv.imgproc.Imgproc;
 import unit.ImageHelper;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -57,20 +56,11 @@ public class ScreenShot {
         }
     }
 
-    public static void main (String[] args) {
-        try {
-            Robot rb = new Robot();
-            rb.mouseMove(0,0);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Mat screenShotAsMat(int x, int y, int width, int height){
         BufferedImage bfimg = getScreenShot(x,y,width,height);
         Mat mat = ImageHelper.BufferedImage2Mat(bfimg);
-        Mat gray = new Mat();
-        Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY);
+       Mat gray = new Mat();
+       Imgproc.cvtColor(mat, gray, Imgproc.COLOR_BGR2GRAY);
         return gray;
     }
 }
