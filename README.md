@@ -29,4 +29,4 @@ java -jar ****.jar
 WuLaWuLaWuLaWuLaWuLaWuLaWuLaWuLa
 
 ## 已知问题与开发计划
-1. 自能捞4-3之前的，之后的我还没开荒（丢脸）
+1. 自能捞4-3之前的，之后的我还没开荒（旗舰大破，emmm丢脸）
