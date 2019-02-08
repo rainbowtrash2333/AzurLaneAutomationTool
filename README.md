@@ -34,3 +34,4 @@ WuLaWuLaWuLaWuLaWuLaWuLaWuLaWuLa
 3. 如果出现Boss船会优先进攻Boss船（全图扫荡太慢了）
 4. 不要带上潜艇去，会有BUG
 5. 保障网络畅通，程序不会检查网络
+6. 非洲土著求安慰
