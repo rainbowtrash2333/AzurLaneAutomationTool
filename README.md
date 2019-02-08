@@ -32,3 +32,4 @@ WuLaWuLaWuLaWuLaWuLaWuLaWuLaWuLa
 1. 只能捞4-3之前的，之后的我还没开荒（旗舰大破，emmm丢脸）
 2. 会自动捞地图中的问号，但不会去取弹药
 3. 如果出现Boss船会优先进攻Boss船（全图扫荡太慢了）
+4. 不要带上潜艇去，会有BUG
