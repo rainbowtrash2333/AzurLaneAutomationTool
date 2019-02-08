@@ -33,3 +33,4 @@ WuLaWuLaWuLaWuLaWuLaWuLaWuLaWuLa
 2. 会自动捞地图中的问号，但不会去取弹药
 3. 如果出现Boss船会优先进攻Boss船（全图扫荡太慢了）
 4. 不要带上潜艇去，会有BUG
+5. 保障网络畅通，程序不会检查网络
