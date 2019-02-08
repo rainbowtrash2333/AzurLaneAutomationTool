@@ -2,12 +2,6 @@ package game;
 
 import image.ScreenShot;
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import unit.ImageHelper;
-import unit.Location;
-
-import java.awt.image.BufferedImage;
-
 import org.opencv.core.*;
 
 

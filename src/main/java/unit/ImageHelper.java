@@ -21,7 +21,7 @@ import static org.bytedeco.javacpp.opencv_core.CV_8UC;
  */
 public class ImageHelper {
 
-  //
+    //
 
     public static Mat BufferedImage2Mat (BufferedImage image) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -32,10 +32,19 @@ public class ImageHelper {
             e.printStackTrace();
         }
         return Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()), Imgcodecs.IMREAD_UNCHANGED);
-  }
+    }
 
-  //   copy from https://techutils.in/blog/2016/08/02/converting-java-bufferedimage-to-opencv-mat-and-vice-versa/
+    public static Mat bufferedImageToMat (BufferedImage bi) {
+        Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+        byte[] data = (
+                (DataBufferByte) bi.getRaster().getDataBuffer()
+        ).getData();
+        mat.put(0, 0, data);
+        return mat;
+    }
 
+    //   copy from https://techutils.in/blog/2016/08/02/converting-java-bufferedimage-to-opencv-mat-and-vice-versa/
+// 图像失真 垃圾代码
 //    public static Mat BufferedImage2Mat(BufferedImage in) {
 //        Mat out = new Mat(in.getHeight(), in.getWidth(), CvType.CV_8UC3);
 //        byte[] data = new byte[in.getWidth() * in.getHeight() * (int) out.elemSize()];

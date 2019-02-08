@@ -50,7 +50,7 @@ public enum matchTemplates {
                 Imgproc.rectangle(src, maxp, new Point(
                         maxp.x + tpl.cols(),
                         maxp.y + tpl.rows()), new Scalar(0, 0, 0), -1);
-                System.out.println("匹配到图片：" + templateName+"位置为："+p);
+                System.out.println("匹配到图片：" + templateName+"\t位置为："+p);
             } else break;
         }
         return targets;
@@ -73,7 +73,7 @@ public enum matchTemplates {
             Point p =new Point(
                     maxr.maxLoc.x + (tpl.height() >> 1),
                     maxr.maxLoc.y  + (tpl.width() >> 1));
-            System.out.println("匹配到图片：" + templateName+"位置为："+p);
+            System.out.println("匹配到图片：" + templateName+"\t位置为："+p);
             return p;
         }else
             return null;

@@ -3,14 +3,12 @@ import image.ScreenShot;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import unit.ImageHelper;
 import unit.Location;
 import unit.Mouse;
-
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Stack;
 import java.util.concurrent.*;
 
@@ -24,6 +22,7 @@ public class Main {
     private static ScreenShot screenShot = new ScreenShot();
     private static boolean isAutoBattle;
     private static int battleCounter;
+    private static boolean isWon;
 
     static {
         try {
@@ -31,7 +30,7 @@ public class Main {
         } catch (AWTException e) {
             e.printStackTrace();
         }
-        rb.setAutoDelay(100);
+        rb.setAutoDelay(150);
         Mouse.init(rb);
         isAutoBattle = false;
         battleCounter = 0;
@@ -43,10 +42,14 @@ public class Main {
         screen = Screen.getInstance();
 
         screen.init();
-
-        while (!screen.exist()) {
-            System.out.println("找不到窗口");
-            screen.init();
+        try {
+            while (!screen.exist()) {
+                System.out.println("找不到游戏窗口，请确保游戏在主页上");
+                TimeUnit.MILLISECONDS.sleep(500);
+                screen.init();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         System.out.println("找到窗口");
 
@@ -65,12 +68,12 @@ public class Main {
         }
 
         // 是否是正确章节
-        System.out.println("check if right chapter");
+//        System.out.println("check if right chapter");
         Mat mat = screenShot.screenShotAsMat(screen.x, screen.y + 50, 110, 110);
         Location Chapter = new Location(mat, "chapter" + chapter);
 
         if (!Chapter.exist()) {
-            System.out.println("incurrect chapter");
+            //     System.out.println("incurrect chapter");
             Location chapter1 = new Location(mat, "chapter1");
             // 选择章节
             int counter = 0;
@@ -81,7 +84,7 @@ public class Main {
                     System.out.println("无法到达第一章");
                     System.exit(1);
                 }
-                System.out.println("跳转第一章");
+                //    System.out.println("跳转第一章");
                 Mouse.move(screen.x + 60, screen.y + 360);
                 Mouse.click();
                 mat = screenShot.screenShotAsMat(screen.x, screen.y + 50, 110, 110);
@@ -91,7 +94,7 @@ public class Main {
             // 选择章
             for (int i = 1; i < chapter; i++) {
                 Mouse.click(1220, 360);
-                System.out.println("go to chapter " + i);
+                //     System.out.println("go to chapter " + i);
             }
         }
 
@@ -105,37 +108,34 @@ public class Main {
         Mouse.click();
         Mouse.move(screen.x + 1053, screen.y + 626);
         Mouse.click();
+
+        // 移动地图
         try {
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.MILLISECONDS.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // 移动地图
-        Mouse.move(450, 455);
-        rb.mousePress(InputEvent.BUTTON1_MASK);
-        Mouse.move(450, 390);
-        rb.mouseRelease(InputEvent.BUTTON1_MASK);
-    }
+        if (bf.getX() != 0 || bf.getY() != 0) {
+            int x = (int) (screen.getEndPoint().x) >> 1;
+            int y = (int) (screen.getEndPoint().y) >> 1;
 
-    // 滑动窗口
-    private static void slideWindow(){
-
+            Mouse.move(x, y);
+            rb.mousePress(InputEvent.BUTTON1_MASK);
+            Mouse.move(x + bf.getOffsetX(), y + bf.getOffsetY());
+            rb.mouseRelease(InputEvent.BUTTON1_MASK);
+        }
     }
 
     private static Stack<Point> findShips () {
 
-
         Stack<Point> ships = new Stack<>();
-
         Mat src = screenShot.screenShotAsMat(
                 screen.x,
                 screen.y,
                 screen.getWidth(),
                 screen.getHeight());
-        //匹配boss船
-
         Point ship;
-        ArrayList<Point> shipList = matchTemplates.INSTANCE.matchMultipleObjects(src, "ship3", 0.7);
+        ArrayList<Point> shipList = matchTemplates.INSTANCE.matchMultipleObjects(src, "ship3", 0.6);
         for (Point p : shipList) {
             p.y += 30;
             ships.push(p);
@@ -153,7 +153,7 @@ public class Main {
             ships.push(p);
         }
 
-        shipList = matchTemplates.INSTANCE.matchMultipleObjects(src, "ship1", 0.6);
+        shipList = matchTemplates.INSTANCE.matchMultipleObjects(src, "ship1", 0.55);
         for (Point p : shipList) {
             ships.push(p);
         }
@@ -190,7 +190,7 @@ public class Main {
 //        }
 
         Mouse.click(ship);
-        System.out.println("点船");
+        //   System.out.println("点船");
         try {
             TimeUnit.SECONDS.sleep(4);
         } catch (InterruptedException ie) {
@@ -199,7 +199,7 @@ public class Main {
 
         while (true) {
             // 是否进入战前准备
-            System.out.println("battle preview");
+            //     System.out.println("battle preview");
             src = screenShot.screenShotAsMat(
                     860,
                     550,
@@ -209,7 +209,7 @@ public class Main {
             // 没有进入战前准备， 可能伏击或无法到达
             if (!BattlePreviewStartButton.exist()) {
                 //检查伏击
-                System.out.println("检查伏击");
+                System.out.println("检查是否遭受伏击");
                 src = screenShot.screenShotAsMat(
                         screen.x + 430,
                         screen.y + 300,
@@ -221,6 +221,9 @@ public class Main {
                 if (isAmbush) {
                     // 出击
                     Mouse.move(screen.x + 625, screen.y + 370);
+                    // 有BUG，有时候点不动，多点几次，嘻嘻
+                    Mouse.click();
+                    Mouse.click();
                     Mouse.click();
                     break;
                 } else {
@@ -232,7 +235,7 @@ public class Main {
                             110);
                     Location Meet = new Location(src, "Meet");
                     // 没有进入 战前检查，这换一个船
-                    System.out.println("Meet.exit:" + Meet.exist());
+//                    System.out.println("Meet.exit:" + Meet.exist());
                     // 是否出现迎击， 有，则没进入战前检查
                     if (Meet.exist()) {
                         cantArriveCounter++;
@@ -255,7 +258,7 @@ public class Main {
 
         // 检查是否自动
         if (!isAutoBattle) {
-            System.out.println("检查自动");
+            System.out.println("检查是否自动作战");
             src = screenShot.screenShotAsMat(
                     90,
                     70,
@@ -263,7 +266,7 @@ public class Main {
                     90);
             Location autoFight = new Location(src, "autoFightingDetection");
             if (!autoFight.exist()) {
-                System.out.println("Not auto fight");
+                System.out.println("没有自动作战");
                 Mouse.click(screen.x + 180, screen.y + 90);
                 // 点击 “知道了”
                 Mouse.click(screen.x + 660, screen.y + 520);
@@ -271,14 +274,14 @@ public class Main {
             isAutoBattle = true;
         } else {
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
         // 点击出击
-        System.out.println("点击出击");
+        System.out.println("出击");
         Mouse.click(screen.x + 1040, screen.y + 630);
         System.out.println("战斗中！");
 
@@ -314,7 +317,7 @@ public class Main {
         // 点击确认
         do {
             Mouse.click();
-            System.out.println("点击");
+            //   System.out.println("点击");
 //            src = screenShot.screenShotAsMat(
 //                    screen.x + 945,
 //                    screen.y + 550,
@@ -349,46 +352,81 @@ public class Main {
     }
 
     public static void main (String[] args) {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-//        System.load(System.getProperty("user.dir") + "\\lib\\opencv_java401.dll");
-//        if (args.length != 2) {
-//            System.out.println("输入参数不对");
-//        }
-//        int chapter = Integer.parseInt(args[0]);
-//        int section = Integer.parseInt(args[1]);
-        int chapter = 3;
-        int section = 4;
+          System.load(System.getProperty("user.dir") + "\\lib\\opencv_java401.dll");
+
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        System.out.print("标枪是不是最萌（请输入【Y或N】）：");
+        input = scanner.next().trim();
+        if (!(input.equals("Y") || input.equals("y"))) {
+            System.out.println("拜拜");
+            System.exit(1);
+        }
+        System.out.println("( •̀ ω •́ )y");
+        System.out.print("请输入捞船的关卡（例：3-4）：");
+        input = scanner.next().trim();
+        System.out.println("你输入的是：" + input);
+        if (input.length() != 3) {
+            System.out.println("输入无效");
+            System.exit(1);
+        }
+        char[] charArray = input.toCharArray();
+        if (charArray[0] < '1' || charArray[0] > '4' || charArray[2] < '1' || charArray[2] > '4') {
+            System.out.println("输入无效");
+            System.out.println("目前只支持1到4章");
+            System.exit(1);
+        }
+        int chapter = charArray[0] - '0';
+        int section = charArray[2] - '0';
+        int times = 10;
         startGame();
         // 点击出击按钮
         Mouse.move(screen.x + 1091, screen.y + 398);
         Mouse.click();
 
 
-        for (int J = 0; J < 30; J++) {
-
-            System.out.println(J + "轮");
+        for (int J = 0; J < times; J++) {
+            System.out.println("正在进行第" + (J + 1) + "轮捞船");
             choose(chapter, section);
+            while (true){
+                try {
+                    TimeUnit.SECONDS.sleep(4);
+                } catch (InterruptedException ignored) {
+                }
+                // 检查是否出现紧急任务
+                Mat src = screenShot.screenShotAsMat(screen.x, screen.y, screen.getWidth(), screen.getHeight());
+                Point p = matchTemplates.INSTANCE.matchObject(src, "confirm", 0.7);
+                if (p != null) {
+                    System.out.println("出现紧急任务，点击确认");
+                    Mouse.click(p);
+                }
 
-            for (int i = 0; i < 10; i++) {
                 Stack<Point> ships = findShips();
-                if (ships.empty()) {
-                    try {
-                        TimeUnit.SECONDS.sleep(6);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    ships = findShips();
-                    if (ships.empty()) {
-                        System.out.println("no ship matched");
+                if(!ships.empty()) battle(ships);
+                // 是否出关卡，没有，再匹配一次
+                else {
+                    src = screenShot.screenShotAsMat(820, 610, 250, 150);
+                    Point SwitchOver = matchTemplates.INSTANCE.matchObject(src, "SwitchOver", 0.9);
+                    // 还在关卡中
+                    // 重新匹配
+                    if (SwitchOver != null) {
+                        // TODO: 2019/2/8 可能是自己挡住了敌舰，移动后再匹配
+                        System.out.println("没有发现敌舰，重新匹配");
+                        ships = findShips();
+                        if(!ships.empty()) battle(ships);
+                        else {
+                            System.out.println("无法匹配敌舰，结束程序");
+                            System.exit(1);
+                        }
+
+                    } else {
+                        System.out.println("捞船完毕，进行下一轮");
                         break;
                     }
                 }
-                battle(ships);
-                try {
-                    TimeUnit.SECONDS.sleep(6);
-                } catch (InterruptedException ignored) {
-                }
+
             }
         }
     }
@@ -402,6 +440,6 @@ public class Main {
         screen.y = 30;
         Mat src;
 
-        findShips();
+
     }
 }
