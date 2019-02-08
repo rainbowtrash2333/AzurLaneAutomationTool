@@ -16,8 +16,11 @@
 * 运行
 #### 懒人向
 点击进入[release](https://github.com/rainbowtrash2333/AzurLaneAutomationTool/releases)页面，根据自己需求下载版本。
+
 两中任选一个下载并解压。
+
 第一个直接点击`start.bat`就可以运行了。
+
 第二个再命令行下输入`java -jar AzurLane.jar`及运行。
 
 
