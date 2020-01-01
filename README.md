@@ -37,3 +37,4 @@ WuLaWuLaWuLaWuLaWuLaWuLaWuLaWuLa
 4. 不要带上潜艇去，会有BUG
 5. 保障网络畅通，程序不会检查网络
 6. 非洲土著求安慰
+7. 学业繁忙，没时间肝游戏，等我有时间，用python重构以下，但最近因该不会动了
